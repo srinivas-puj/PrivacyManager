@@ -3,9 +3,9 @@ from flask_restful import Resource, Api
 import uuid
 import requests
 
-# Creating the flask app
+# creating the flask app
 app = Flask(__name__)
-# Creating an API object
+# creating an API object
 api = Api(app)
 
 # Simple Hello World endpoint
@@ -14,7 +14,7 @@ class Hello(Resource):
         return jsonify({'message': 'hello world'})
 
     def post(self):
-        data = request.get_json()  # Get the JSON data from the request
+        data = request.get_json()  # status code
         return jsonify({'data': data}), 201
 
 # Endpoint for calculating square
@@ -34,7 +34,7 @@ class Inbox(Resource):
         URL = "http://api.guerrillamail.com/ajax.php"
         
         # Cookie string (PHPSESSID should be updated to match a valid session)
-        COOKIES = {'PHPSESSID': '873rkpb0h8oe0hnsfg229nvhvr'}  # Example session cookie
+        COOKIES = {'PHPSESSID': 'rr8pbfjosa0coj2klfposdsr8a'}  # Example session cookie
 
         # Parameters for the API request
         PARAMS = {
@@ -69,43 +69,45 @@ class Inbox(Resource):
         except requests.RequestException as e:
             return jsonify({'error': f'Request failed: {str(e)}'}), 500
 
-class Email_Get(Resource):
-    def get(self):
-        # Replace with the actual session ID
-        URL = "http://api.guerrillamail.com/ajax.php"
-        
-        # Set up the parameters for the GET request
-        params = {
-            'f': 'get_email_address',
-            'ip': '127.0.0.1',  # Replace with your IP address
-            'agent': 'Mozilla_foo_bar'  # Replace with your user-agent string
-        }
+class Email_Get(Resource) :
+	
+	def get(self):
+	# Replace with the actual session ID
 
-        # Set up the cookies (using PHPSESSID)
-        cookies = {'PHPSESSID': '873rkpb0h8oe0hnsfg229nvhvr'}  # Replace with actual PHPSESSID
+# Define the API URL
+		url = "http://api.guerrillamail.com/ajax.php"
 
-        try:
-            # Send the GET request
-            response = requests.get(URL, params=params, cookies=cookies)
+# Set up the parameters for the GET request
+		params = {
+    			'f': 'get_email_address',
+    			'ip': '127.0.0.1',  # Replace with your IP address
+    			'agent': 'Mozilla_foo_bar'  # Replace with your user-agent string
+		}
 
-            # Check if the request was successful
-            if response.status_code == 200:
-                data = response.json()
-                # Return the current email address
-                return jsonify(data)
-            else:
-                return jsonify({'error': f'Failed to fetch email address. Status Code: {response.status_code}'}), 400
-        except requests.RequestException as e:
-            return jsonify({'error': f'Request failed: {str(e)}'}), 500
+		# Set up the cookies (using PHPSESSID)
+		cookies = ''
+
+		# Send the GET request
+		response = requests.get(url, params=params, cookies=cookies)
+
+		# Check if the request was successful
+		if response.status_code == 200:
+    			data = response.json()
+    # Print the current email address
+    			return jsonify(data)
+		else:
+    			print(f"Failed to fetch email address. Status Code: {response.status_code}")
+
 
 # Add the defined resources along with their corresponding URLs
 api.add_resource(Hello, '/')
 api.add_resource(Square, '/square/<int:num>')
 api.add_resource(Uuid, '/api/uuid/new')
 api.add_resource(Inbox, '/inbox')
-api.add_resource(Email_Get, '/get_email')
+api.add_resource(Inbox, '/get_email')
 
-# Driver function
+# driver function
 if __name__ == '__main__':
-    app.run(ssl_context=('cert.pem', 'key.pem'), debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)
+
 
